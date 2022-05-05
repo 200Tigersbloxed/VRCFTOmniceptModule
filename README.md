@@ -29,7 +29,7 @@ A VRCFaceTracking Module that adds support for the HP Omnicept
 *Example of Incoming Subscriptions Request tab*
 
 > ___
-> ### ⚠️ WARNING
+> ### ⚠️ WARNING ⚠️
 > VRCFTOmniceptModule will only request the following Message types:
 > 
 > + `EYE_TRACKING`
