@@ -35,7 +35,7 @@ public class GliaManager
         // Start Glia
         try
         {
-            m_gliaClient = new Glia("HRtoVRChat_OSC",
+            m_gliaClient = new Glia("VRCFTOmniceptModule",
                 new SessionLicense(String.Empty, String.Empty, LicensingModel.Core, false));
             m_gliaValCache = new GliaValueCache(m_gliaClient.Connection);
             SubscriptionList sl = new SubscriptionList
