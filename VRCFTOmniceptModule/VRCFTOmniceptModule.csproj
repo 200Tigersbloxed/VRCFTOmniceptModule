@@ -24,6 +24,7 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,7 @@
         <DefineConstants>TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="AsyncIO, Version=0.1.25.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8">
@@ -82,6 +84,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="EyeLidTools\SmoothFloat.cs" />
         <Compile Include="GliaManager.cs" />
         <Compile Include="OmniceptModule.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,13 +121,7 @@
             <InputAssemblies Include="SemanticVersioning.dll" />
         </ItemGroup>
 
-        <ILRepack
-                OutputType="$(OutputType)"
-                MainAssembly="$(AssemblyName).dll"
-                OutputAssembly="$(AssemblyName).dll"
-                InputAssemblies="@(InputAssemblies)"
-                InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)"
-                WorkingDirectory="$(WorkingDirectory)" />
+        <ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
 
     </Target>
     

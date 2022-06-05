@@ -1,6 +1,7 @@
 ﻿using HP.Omnicept.Messaging.Messages;
 using VRCFaceTracking;
 using VRCFaceTracking.Params;
+using VRCFTOmniceptModule.EyeLidTools;
 using Eye = HP.Omnicept.Messaging.Messages.Eye;
 
 namespace VRCFTOmniceptModule;
@@ -10,8 +11,14 @@ public class VRCFTEyeTracking
     public class VRCFTEye
     {
         public Vector2 Look;
-        public float Openness;
+        public float Openness
+        {
+            get => Smoothened_Openness.Value;
+            set => Smoothened_Openness.Value = value;
+        }
         public float PupilDilate;
+
+        private SmoothFloat Smoothened_Openness = new();
 
         private static float ProperRangeDilate(float dilation) => (dilation - 1.5f) / 6.5f;
 
