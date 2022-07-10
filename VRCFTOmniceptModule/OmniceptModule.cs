@@ -33,7 +33,8 @@ public class OmniceptModule : ExtTrackingModule
     {
         while (true)
         {
-            manager?.UpdateMessage();
+            if (Status.EyeState == ModuleState.Active)
+                manager?.UpdateMessage();
             Thread.Sleep(1);
         }
     };
