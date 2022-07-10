@@ -26,7 +26,6 @@ public class OmniceptModule : ExtTrackingModule
                 Logger.Error("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! " + e);
             }
         };
-        Utilizing = (start, false);
         return (start, false);
     }
 
@@ -34,23 +33,16 @@ public class OmniceptModule : ExtTrackingModule
     {
         while (true)
         {
-            Update();
+            manager?.UpdateMessage();
             Thread.Sleep(1);
         }
     };
-
-    public override void Update()
-    {
-        manager?.UpdateMessage();
-    }
 
     public override void Teardown()
     {
         manager?.StopGlia();
         manager = null;
-        Utilizing = (false, false);
     }
 
     public override (bool SupportsEye, bool SupportsLip) Supported => (true, false);
-    public override (bool UtilizingEye, bool UtilizingLip) Utilizing { get; set; }
 }
