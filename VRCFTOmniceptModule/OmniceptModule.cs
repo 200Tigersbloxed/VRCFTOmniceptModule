@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using VRCFaceTracking;
+using VRCFTOmniceptModule.EyeLidTools;
 
 namespace VRCFTOmniceptModule;
 
@@ -26,6 +27,8 @@ public class OmniceptModule : ExtTrackingModule
                 Logger.Error("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! " + e);
             }
         };
+        if(start)
+            SmoothFloatWorkers.Init();
         return (start, false);
     }
 
@@ -43,6 +46,9 @@ public class OmniceptModule : ExtTrackingModule
     {
         manager?.StopGlia();
         manager = null;
+        Data.LeftEye.Destroy();
+        Data.RightEye.Destroy();
+        SmoothFloatWorkers.Destroy();
     }
 
     public override (bool SupportsEye, bool SupportsLip) Supported => (true, false);

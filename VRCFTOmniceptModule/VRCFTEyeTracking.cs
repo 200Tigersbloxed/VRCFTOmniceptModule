@@ -10,43 +10,80 @@ public class VRCFTEyeTracking
 {
     public class VRCFTEye
     {
+        private EyeType _eyeType;
+        
         public Vector2 Look;
         public float Openness
         {
-            get => Smoothened_Openness.Value;
-            set => Smoothened_Openness.Value = value;
+            get
+            {
+                switch (_eyeType)
+                {
+                    case EyeType.Left:
+                        return Smoothened_Openness_Left.Value;
+                    case EyeType.Right:
+                        return Smoothened_Openness_Right.Value;
+                }
+                return (Smoothened_Openness_Left.Value + Smoothened_Openness_Right.Value) / 2;
+            }
+            set
+            {
+                switch (_eyeType)
+                {
+                    case EyeType.Left:
+                        Smoothened_Openness_Left.Value = value;
+                        break;
+                    case EyeType.Right:
+                        Smoothened_Openness_Right.Value = value;
+                        break;
+                }
+            }
         }
+        
         public float PupilDilate;
 
-        private SmoothFloat Smoothened_Openness = new();
+        private static SmoothFloat Smoothened_Openness_Left = new();
+        private static SmoothFloat Smoothened_Openness_Right = new();
 
         private static float ProperRangeDilate(float dilation) => (dilation - 1.5f) / 6.5f;
 
         public void Update(Eye data)
         {
-            Look = new Vector2(data.Gaze.X * -1, data.Gaze.Y);
-            Openness = data.Openness;
-            PupilDilate = ProperRangeDilate(data.PupilDilation);
+            if(data.Gaze.Confidence >= 0.25f)
+                Look = new Vector2(data.Gaze.X * -1, data.Gaze.Y);
+            if(data.OpennessConfidence >= 0.25f)
+                Openness = data.Openness;
+            if(data.PupilDilationConfidence >= 0.25f)
+                PupilDilate = ProperRangeDilate(data.PupilDilation);
+        }
+
+        public void Destroy()
+        {
+            Smoothened_Openness_Left.Destroy();
+            Smoothened_Openness_Right.Destroy();
+        }
+
+        public VRCFTEye(EyeType eyeType) => _eyeType = eyeType;
+
+        public enum EyeType
+        {
+            Left,
+            Right,
+            Combined
         }
     }
 
     public class VRCFTEyeTrackingData
     {
-        public VRCFTEye LeftEye;
-        public VRCFTEye RightEye;
+        public VRCFTEye LeftEye = new(VRCFTEye.EyeType.Left);
+        public VRCFTEye RightEye = new(VRCFTEye.EyeType.Right);
 
-        public VRCFTEye CombinedEye => new()
+        public VRCFTEye CombinedEye => new(VRCFTEye.EyeType.Combined)
         {
             Look = new Vector2((LeftEye.Look.x + LeftEye.Look.y) / 2, (RightEye.Look.x + RightEye.Look.y) / 2),
             Openness = (LeftEye.Openness + RightEye.Openness) / 2,
             PupilDilate = (LeftEye.PupilDilate + RightEye.PupilDilate) / 2
         };
-
-        public VRCFTEyeTrackingData()
-        {
-            LeftEye = new VRCFTEye();
-            RightEye = new VRCFTEye();
-        }
 
         public void Update(EyeTracking data)
         {
