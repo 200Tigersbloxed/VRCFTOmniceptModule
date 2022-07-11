@@ -12,13 +12,6 @@ public class SmoothFloat
     private float target;
     private float current;
 
-    private List<float> validEyes = new()
-    {
-        0f,
-        0.5f,
-        1f
-    };
-
     public float Value
     {
         get => current;
