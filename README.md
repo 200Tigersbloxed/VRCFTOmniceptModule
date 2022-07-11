@@ -7,7 +7,7 @@ A VRCFaceTracking Module that adds support for the HP Omnicept
 1) Download the [Latest Release](https://github.com/200Tigersbloxed/VRCFTOmniceptModule/releases/latest/download/VRCFTOmniceptModule.dll)
 2) Move the dll file to `%AppData%\VRCFaceTracking\CustomLibs`
 3) Launch [VRCFaceTracking.exe](https://github.com/benaclejames/VRCFaceTracking/releases/latest/download/VRCFaceTracking.exe)
-    + Note: Release v3.0.0 and earlier is **not compatible**! You must build the app from source until future release.
+    + Note: Version 4.0.0 or higher is required!
 4) When prompted by your HP Omnicept Tray Application, Allow VRCFaceTracking.exe to read EyeTacking Data
 
 ## How to Allow from the HP Omnicept Tray Application
