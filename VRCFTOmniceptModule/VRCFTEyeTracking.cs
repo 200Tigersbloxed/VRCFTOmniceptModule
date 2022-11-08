@@ -80,7 +80,7 @@ public class VRCFTEyeTracking
 
         public VRCFTEye CombinedEye => new(VRCFTEye.EyeType.Combined)
         {
-            Look = new Vector2((LeftEye.Look.x + LeftEye.Look.y) / 2, (RightEye.Look.x + RightEye.Look.y) / 2),
+            Look = new Vector2((LeftEye.Look.x + RightEye.Look.x) / 2, (LeftEye.Look.y + RightEye.Look.y) / 2),
             Openness = (LeftEye.Openness + RightEye.Openness) / 2,
             PupilDilate = (LeftEye.PupilDilate + RightEye.PupilDilate) / 2
         };
