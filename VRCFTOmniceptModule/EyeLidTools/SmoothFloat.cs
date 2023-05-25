@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using VRCFaceTracking;
-
-namespace VRCFTOmniceptModule.EyeLidTools;
+﻿namespace VRCFTOmniceptModule.EyeLidTools;
 
 public class SmoothFloat
 {
-    private static int instances = 0;
+    private static int instances;
     
     private float target;
     private float current;
@@ -25,17 +20,6 @@ public class SmoothFloat
             Smooth();
         });
         instances++;
-    }
-
-    public void Destroy()
-    {
-        for (int i = 0; i < instances; i++)
-        {
-            if (!SmoothFloatWorkers.RemoveTaskById($"sf{i}"))
-            {
-                Logger.Error("Failed to remove SmoothFloat worker with id sm" + i);
-            }
-        }
     }
     
     private void Smooth(float by = 0.1f)
@@ -59,9 +43,7 @@ public static class SmoothFloatWorkers
         }
     });
 
-    public static bool RemoveTaskById(string id) => Tasks.Remove(id);
-
-    private static bool didInit = false;
+    private static bool didInit;
 
     public static void Init()
     {
@@ -78,7 +60,6 @@ public static class SmoothFloatWorkers
         {
             Tasks.Clear();
             cts.Cancel();
-            worker.Abort();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using HP.Omnicept.Messaging.Messages;
 using VRCFaceTracking;
-using VRCFaceTracking.Params;
+using VRCFaceTracking.Core.Types;
 using VRCFTOmniceptModule.EyeLidTools;
 using Eye = HP.Omnicept.Messaging.Messages.Eye;
 
@@ -49,18 +49,12 @@ public class VRCFTEyeTracking
 
         public void Update(Eye data)
         {
-            if(data.Gaze.Confidence >= 0.25f)
+            if (data.Gaze.Confidence >= 0.25f)
                 Look = new Vector2(data.Gaze.X * -1, data.Gaze.Y);
             if(data.OpennessConfidence >= 0.25f)
                 Openness = data.Openness;
             if(data.PupilDilationConfidence >= 0.25f)
                 PupilDilate = ProperRangeDilate(data.PupilDilation);
-        }
-
-        public void Destroy()
-        {
-            Smoothened_Openness_Left.Destroy();
-            Smoothened_Openness_Right.Destroy();
         }
 
         public VRCFTEye(EyeType eyeType) => _eyeType = eyeType;
@@ -95,15 +89,12 @@ public class VRCFTEyeTracking
     public static void UpdateEyeTrackingData(VRCFTEyeTrackingData data)
     {
         // LeftEye
-        UnifiedTrackingData.LatestEyeData.Left.Look = data.LeftEye.Look;
-        UnifiedTrackingData.LatestEyeData.Left.Openness = data.LeftEye.Openness;
+        UnifiedTracking.Data.Eye.Left.Gaze = data.LeftEye.Look;
+        UnifiedTracking.Data.Eye.Left.Openness = data.LeftEye.Openness;
+        UnifiedTracking.Data.Eye.Left.PupilDiameter_MM = data.LeftEye.PupilDilate;
         // RightEye
-        UnifiedTrackingData.LatestEyeData.Right.Look = data.RightEye.Look;
-        UnifiedTrackingData.LatestEyeData.Right.Openness = data.RightEye.Openness;
-        // CombinedEye
-        UnifiedTrackingData.LatestEyeData.Combined.Look = data.CombinedEye.Look;
-        UnifiedTrackingData.LatestEyeData.Combined.Openness = data.CombinedEye.Openness;
-        // Pupil
-        UnifiedTrackingData.LatestEyeData.EyesDilation = data.CombinedEye.PupilDilate;
+        UnifiedTracking.Data.Eye.Right.Gaze = data.RightEye.Look;
+        UnifiedTracking.Data.Eye.Right.Openness = data.RightEye.Openness;
+        UnifiedTracking.Data.Eye.Right.PupilDiameter_MM = data.RightEye.PupilDilate;
     }
 }

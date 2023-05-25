@@ -1,17 +1,19 @@
-﻿using System;
-using System.Threading;
+﻿using Microsoft.Extensions.Logging;
 using VRCFaceTracking;
+using VRCFaceTracking.Core.Library;
 using VRCFTOmniceptModule.EyeLidTools;
 
 namespace VRCFTOmniceptModule;
 
 public class OmniceptModule : ExtTrackingModule
 {
-    private GliaManager manager;
+    internal static ILogger? logger;
+    private GliaManager? manager;
     private readonly VRCFTEyeTracking.VRCFTEyeTrackingData Data = new();
     
-    public override (bool eyeSuccess, bool lipSuccess) Initialize(bool eye, bool lip)
+    public override (bool eyeSuccess, bool expressionSuccess) Initialize(bool eye, bool lip)
     {
+        logger = Logger;
         if(manager == null)
             manager = new GliaManager();
         bool start = manager.StartGlia();
@@ -24,32 +26,27 @@ public class OmniceptModule : ExtTrackingModule
             }
             catch (Exception e)
             {
-                Logger.Error("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! " + e);
+                Logger.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to update VRCFaceTracking! {E}", e);
             }
         };
         if(start)
             SmoothFloatWorkers.Init();
+        Logger.Log(LogLevel.Debug, "[VRCFTOmniceptModule] Init status {Start}", start);
         return (start, false);
     }
 
-    public override Action GetUpdateThreadFunc() => () =>
+    public override void Update()
     {
-        while (true)
-        {
-            if (Status.EyeState == ModuleState.Active)
-                manager?.UpdateMessage();
-            Thread.Sleep(1);
-        }
-    };
+        if (Status == ModuleState.Active)
+            manager?.UpdateMessage();
+    }
 
     public override void Teardown()
     {
         manager?.StopGlia();
         manager = null;
-        Data.LeftEye.Destroy();
-        Data.RightEye.Destroy();
         SmoothFloatWorkers.Destroy();
     }
 
-    public override (bool SupportsEye, bool SupportsLip) Supported => (true, false);
+    public override (bool SupportsEye, bool SupportsExpression) Supported => (true, false);
 }

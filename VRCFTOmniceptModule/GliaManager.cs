@@ -1,15 +1,14 @@
-﻿using System;
-using HP.Omnicept;
+﻿using HP.Omnicept;
 using HP.Omnicept.Messaging;
 using HP.Omnicept.Messaging.Messages;
-using VRCFaceTracking;
+using Microsoft.Extensions.Logging;
 
 namespace VRCFTOmniceptModule;
 
 public class GliaManager
 {
-    private Glia m_gliaClient;
-    private GliaValueCache m_gliaValCache;
+    private Glia? m_gliaClient;
+    private GliaValueCache? m_gliaValCache;
     
     public bool m_isConnected { get; private set; }
     public Action<EyeTracking> OnEyeTracking = tracking => { };
@@ -49,9 +48,10 @@ public class GliaManager
             m_gliaClient.setSubscriptions(sl);
             m_isConnected = true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
             m_isConnected = false;
+            OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to load Glia for reason {E}", e);
         }
         return m_isConnected;
     }
@@ -61,15 +61,15 @@ public class GliaManager
         switch (msg.Header.MessageType)
         {
             case MessageTypes.ABI_MESSAGE_EYE_TRACKING:
-                EyeTracking eyeTracking = m_gliaClient.Connection.Build<EyeTracking>(msg);
+                EyeTracking eyeTracking = m_gliaClient!.Connection.Build<EyeTracking>(msg);
                 OnEyeTracking.Invoke(eyeTracking);
                 break;
         }
     }
         
-    ITransportMessage RetrieveMessage()
+    ITransportMessage? RetrieveMessage()
     {
-        ITransportMessage msg = null;
+        ITransportMessage? msg = null;
         if (m_gliaValCache != null)
         {
             try
@@ -78,7 +78,7 @@ public class GliaManager
             }
             catch (HP.Omnicept.Errors.TransportError e)
             {
-                Logger.Error("[VRCFTOmniceptModule] Failed to start Glia! " + e);
+                OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to start Glia! {E}", e);
             }
         }
         return msg;
@@ -90,14 +90,14 @@ public class GliaManager
         {
             if (m_isConnected)
             {
-                ITransportMessage msg = RetrieveMessage();
+                ITransportMessage? msg = RetrieveMessage();
                 if(msg != null)
                     HandleMessage(msg);
             }
         }
         catch (Exception e)
         {
-            Logger.Error("[VRCFTOmniceptModule] Failed to get message! " + e);
+            OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to get message! {E}", e);
         }
     }
 }

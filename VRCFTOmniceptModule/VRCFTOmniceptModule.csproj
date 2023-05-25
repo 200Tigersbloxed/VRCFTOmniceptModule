@@ -1,130 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props" Condition="Exists('..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" />
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{169D7AA7-C568-4C9F-83C2-1593BD6E11C5}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>VRCFTOmniceptModule</RootNamespace>
-        <AssemblyName>VRCFTOmniceptModule</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <LangVersion>10</LangVersion>
-        <VRCFT>E:\RiderProjects\VRCFaceTracking\VRCFaceTracking\bin\Debug</VRCFT>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <Prefer32bit>false</Prefer32bit>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <Prefer32bit>false</Prefer32bit>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
+
     <ItemGroup>
-        <Reference Include="AsyncIO, Version=0.1.25.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8">
-          <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\AsyncIO.dll</HintPath>
-        </Reference>
-        <Reference Include="Google.Protobuf, Version=3.11.4.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604">
-          <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\Google.Protobuf.dll</HintPath>
-        </Reference>
-        <Reference Include="lib-client-csharp, Version=1.13.1.3402, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\lib-client-csharp.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Build.Framework, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.Build.Framework.15.9.20\lib\net46\Microsoft.Build.Framework.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.Build.Utilities.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.Build.Utilities.Core.15.9.20\lib\net46\Microsoft.Build.Utilities.Core.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\Microsoft.VisualStudio.Setup.Configuration.Interop.1.16.30\lib\net35\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="mscorlib" />
-        <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a">
-          <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\NetMQ.dll</HintPath>
-        </Reference>
-        <Reference Include="SemanticVersioning, Version=2.0.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
-          <HintPath>..\packages\SemanticVersioning.2.0.2\lib\net45\SemanticVersioning.dll</HintPath>
-        </Reference>
-        <Reference Include="System" />
-        <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Configuration" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-          <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Xaml" />
-        <Reference Include="System.Xml" />
-        <Reference Include="VRCFaceTracking">
-          <HintPath>C:\Users\lukej\Desktop\VRCFaceTracking.exe</HintPath>
-        </Reference>
+      <Reference Include="AsyncIO">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\AsyncIO.dll</HintPath>
+      </Reference>
+      <Reference Include="Google.Protobuf">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\Google.Protobuf.dll</HintPath>
+      </Reference>
+      <Reference Include="lib-client-csharp">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\lib-client-csharp.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Logging">
+        <HintPath>Microsoft.Extensions.Logging.dll</HintPath>
+      </Reference>
+      <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+        <HintPath>Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+      </Reference>
+      <Reference Include="NetMQ">
+        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\NetMQ.dll</HintPath>
+      </Reference>
+      <Reference Include="VRCFaceTracking.Core">
+        <HintPath>VRCFaceTracking.Core.dll</HintPath>
+      </Reference>
     </ItemGroup>
+
     <ItemGroup>
-        <Compile Include="EyeLidTools\SmoothFloat.cs" />
-        <Compile Include="GliaManager.cs" />
-        <Compile Include="OmniceptModule.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="VRCFTEyeTracking.cs" />
+      <PackageReference Include="SemanticVersioning" Version="2.0.2" />
     </ItemGroup>
+
     <ItemGroup>
-      <None Include="App.config" />
-      <None Include="packages.config" />
+      <None Remove="VRCFaceTracking.Core.dll" />
+      <None Remove="Microsoft.Extensions.Logging.Abstractions.dll" />
+      <None Remove="Microsoft.Extensions.Logging.dll" />
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-      <PropertyGroup>
-        <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
-      </PropertyGroup>
-      <Error Condition="!Exists('..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.MSBuild.Task.2.0.13\build\ILRepack.MSBuild.Task.props'))" />
-    </Target>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
 
-    <Target Name="ILRepack" AfterTargets="Build">
-        <PropertyGroup>
-            <WorkingDirectory>$(MSBuildThisFileDirectory)bin\$(Configuration)\$(TargetFramework)</WorkingDirectory>
-        </PropertyGroup>
-
-        <ItemGroup>
-            <InputAssemblies Include="AsyncIO.dll" />
-            <InputAssemblies Include="Google.Protobuf.dll" />
-            <InputAssemblies Include="lib-client-csharp.dll" />
-            <InputAssemblies Include="NetMQ.dll" />
-            <InputAssemblies Include="SemanticVersioning.dll" />
-        </ItemGroup>
-
-        <ILRepack OutputType="$(OutputType)" MainAssembly="$(AssemblyName).dll" OutputAssembly="$(AssemblyName).dll" InputAssemblies="@(InputAssemblies)" InternalizeExcludeAssemblies="@(InternalizeExcludeAssemblies)" WorkingDirectory="$(WorkingDirectory)" />
-
-    </Target>
-    
 </Project>
