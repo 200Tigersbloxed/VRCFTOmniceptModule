@@ -51,7 +51,7 @@ public class GliaManager
         catch (Exception e)
         {
             m_isConnected = false;
-            OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to load Glia for reason {E}", e);
+            OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to load Glia for reason {E}", e);
         }
         return m_isConnected;
     }
@@ -78,7 +78,7 @@ public class GliaManager
             }
             catch (HP.Omnicept.Errors.TransportError e)
             {
-                OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to start Glia! {E}", e);
+                OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to start Glia! {E}", e);
             }
         }
         return msg;
@@ -97,7 +97,7 @@ public class GliaManager
         }
         catch (Exception e)
         {
-            OmniceptModule.logger?.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to get message! {E}", e);
+            OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to get message! {E}", e);
         }
     }
 }

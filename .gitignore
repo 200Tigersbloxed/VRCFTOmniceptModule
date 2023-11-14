@@ -351,3 +351,5 @@ MigrationBackup/
 VRCFTOmniceptModule/VRCFaceTracking.Core.dll
 VRCFTOmniceptModule/Microsoft.Extensions.Logging.Abstractions.dll
 VRCFTOmniceptModule/Microsoft.Extensions.Logging.dll
+
+.idea/

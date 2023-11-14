@@ -48,4 +48,9 @@
       <None Remove="Microsoft.Extensions.Logging.dll" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="HMD.png" />
+      <EmbeddedResource Include="HMD.png" />
+    </ItemGroup>
+
 </Project>

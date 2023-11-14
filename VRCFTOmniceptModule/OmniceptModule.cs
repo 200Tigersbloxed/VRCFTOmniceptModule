@@ -27,24 +27,21 @@ public class OmniceptModule : ExtTrackingModule
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, "[VRCFTOmniceptModule] Failed to update VRCFaceTracking! {E}", e);
+                Logger.LogError("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! {E}", e);
             }
         };
         if(start)
             SmoothFloatWorkers.Init();
 
-        List<Stream> streams = new();
-        Assembly a = Assembly.GetExecutingAssembly();
-        var hmdStream = a.GetManifestResourceStream
-            ("VRCFTOmniceptModule.HMD.png");
-        streams.Add(hmdStream!);
-        ModuleInformation = new ModuleMetadata()
+        List<Stream> streams = new()
+            {Assembly.GetExecutingAssembly().GetManifestResourceStream("VRCFTOmniceptModule.HMD.png")!};
+        ModuleInformation = new ModuleMetadata
         {
             Name = "Omnicept Eye Tracking",
             StaticImages = streams
         };
 
-        Logger.Log(LogLevel.Debug, "[VRCFTOmniceptModule] Init status {Start}", start);
+        Logger.LogDebug("[VRCFTOmniceptModule] Init status {Start}", start);
         return (start, false);
     }
 
