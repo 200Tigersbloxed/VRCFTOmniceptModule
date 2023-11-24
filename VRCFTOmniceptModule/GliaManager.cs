@@ -8,17 +8,17 @@ namespace VRCFTOmniceptModule;
 public class GliaManager
 {
     private Glia? m_gliaClient;
-    private GliaValueCache? m_gliaValCache;
-    
+    private GliaLastValueCacheCustom? m_gliaValCache;
+
     public bool m_isConnected { get; private set; }
-    public Action<EyeTracking> OnEyeTracking = tracking => { };
+    public Action<EyeTracking> OnEyeTracking;
 
     public void StopGlia()
-    { 
+    {
         // Verify Glia is Disposed
-        if(m_gliaValCache != null)
+        if (m_gliaValCache != null)
             m_gliaValCache?.Stop();
-        if(m_gliaClient != null)
+        if (m_gliaClient != null)
             m_gliaClient?.Dispose();
         m_gliaValCache = null;
         m_gliaClient = null;
@@ -30,13 +30,13 @@ public class GliaManager
     {
         // Verify Glia is Disposed
         StopGlia();
-        
+
         // Start Glia
         try
         {
             m_gliaClient = new Glia("VRCFTOmniceptModule",
                 new SessionLicense(String.Empty, String.Empty, LicensingModel.Core, false));
-            m_gliaValCache = new GliaValueCache(m_gliaClient.Connection);
+            m_gliaValCache = new GliaLastValueCacheCustom(m_gliaClient.Connection);
             SubscriptionList sl = new SubscriptionList
             {
                 Subscriptions =
@@ -53,51 +53,12 @@ public class GliaManager
             m_isConnected = false;
             OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to load Glia for reason {E}", e);
         }
+        m_gliaValCache!.OnEyeTracking += (eyetrack) => { OnEyeTracking?.Invoke(eyetrack); };
         return m_isConnected;
     }
-    
-    void HandleMessage(ITransportMessage msg)
-    {
-        switch (msg.Header.MessageType)
-        {
-            case MessageTypes.ABI_MESSAGE_EYE_TRACKING:
-                EyeTracking eyeTracking = m_gliaClient!.Connection.Build<EyeTracking>(msg);
-                OnEyeTracking.Invoke(eyeTracking);
-                break;
-        }
-    }
-        
-    ITransportMessage? RetrieveMessage()
-    {
-        ITransportMessage? msg = null;
-        if (m_gliaValCache != null)
-        {
-            try
-            {
-                msg = m_gliaValCache.GetNext();
-            }
-            catch (HP.Omnicept.Errors.TransportError e)
-            {
-                OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to start Glia! {E}", e);
-            }
-        }
-        return msg;
-    }
 
-    public void UpdateMessage()
+    public EyeTracking GetEyeTracking()
     {
-        try
-        {
-            if (m_isConnected)
-            {
-                ITransportMessage? msg = RetrieveMessage();
-                if(msg != null)
-                    HandleMessage(msg);
-            }
-        }
-        catch (Exception e)
-        {
-            OmniceptModule.logger?.LogError("[VRCFTOmniceptModule] Failed to get message! {E}", e);
-        }
+        return m_gliaValCache!.GetEyeData();
     }
 }

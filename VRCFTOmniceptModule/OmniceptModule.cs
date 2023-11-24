@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Reflection;
 using VRCFaceTracking;
-using VRCFaceTracking.Core.Library;
 using VRCFTOmniceptModule.EyeLidTools;
 
 namespace VRCFTOmniceptModule;
@@ -11,27 +10,21 @@ public class OmniceptModule : ExtTrackingModule
     internal static ILogger? logger;
     private GliaManager? manager;
     private readonly VRCFTEyeTracking.VRCFTEyeTrackingData Data = new();
-    
+
     public override (bool eyeSuccess, bool expressionSuccess) Initialize(bool eye, bool lip)
     {
         logger = Logger;
-        if(manager == null)
+        if (manager == null)
             manager = new GliaManager();
         bool start = manager.StartGlia();
-        manager.OnEyeTracking += tracking =>
+        if (start)
+            SmoothFloatWorkers.Init();
+
+        manager.OnEyeTracking += tracking => //When new ft recieved from omnicept, update
         {
             Data.Update(tracking);
-            try
-            {
-                VRCFTEyeTracking.UpdateEyeTrackingData(Data);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! {E}", e);
-            }
+            VRCFTEyeTracking.UpdateEyeTrackingData(Data);
         };
-        if(start)
-            SmoothFloatWorkers.Init();
 
         List<Stream> streams = new()
             {Assembly.GetExecutingAssembly().GetManifestResourceStream("VRCFTOmniceptModule.HMD.png")!};
@@ -47,8 +40,8 @@ public class OmniceptModule : ExtTrackingModule
 
     public override void Update()
     {
-        if (Status == ModuleState.Active)
-            manager?.UpdateMessage();
+        //We just stop this from using an entire cpu core by making it sleep
+        Thread.Sleep(200);
     }
 
     public override void Teardown()
