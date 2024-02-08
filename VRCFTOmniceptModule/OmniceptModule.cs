@@ -1,7 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HP.Omnicept;
+using HP.Omnicept.Errors;
+using HP.Omnicept.Messaging;
+using HP.Omnicept.Messaging.Messages;
+using Microsoft.Extensions.Logging;
+using NetMQ;
 using System.Reflection;
 using VRCFaceTracking;
-using VRCFaceTracking.Core.Library;
 using VRCFTOmniceptModule.EyeLidTools;
 
 namespace VRCFTOmniceptModule;
@@ -9,29 +13,36 @@ namespace VRCFTOmniceptModule;
 public class OmniceptModule : ExtTrackingModule
 {
     internal static ILogger? logger;
-    private GliaManager? manager;
+    private Glia? m_gliaClient;
     private readonly VRCFTEyeTracking.VRCFTEyeTrackingData Data = new();
-    
+    private bool m_isConnected = false;
+
     public override (bool eyeSuccess, bool expressionSuccess) Initialize(bool eye, bool lip)
     {
-        logger = Logger;
-        if(manager == null)
-            manager = new GliaManager();
-        bool start = manager.StartGlia();
-        manager.OnEyeTracking += tracking =>
+
+        try
         {
-            Data.Update(tracking);
-            try
+            m_gliaClient = new Glia("VRCFTOmniceptModule",
+                new SessionLicense(String.Empty, String.Empty, LicensingModel.Core, false));
+            SubscriptionList sl = new()
             {
-                VRCFTEyeTracking.UpdateEyeTrackingData(Data);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("[VRCFTOmniceptModule] Failed to update VRCFaceTracking! {E}", e);
-            }
-        };
-        if(start)
+                Subscriptions =
+                {
+                    new Subscription(MessageTypes.ABI_MESSAGE_EYE_TRACKING, String.Empty, String.Empty,
+                        String.Empty, String.Empty, new MessageVersionSemantic("1.0.0"))
+                }
+            };
+            m_gliaClient.setSubscriptions(sl);
+            m_isConnected = true;
+        }
+        catch (Exception e)
+        {
+            Logger?.LogError("[VRCFTOmniceptModule] Failed to load for reason {E}", e);
+        }
+        if (m_isConnected)
+        {
             SmoothFloatWorkers.Init();
+        }
 
         List<Stream> streams = new()
             {Assembly.GetExecutingAssembly().GetManifestResourceStream("VRCFTOmniceptModule.HMD.png")!};
@@ -41,20 +52,47 @@ public class OmniceptModule : ExtTrackingModule
             StaticImages = streams
         };
 
-        Logger.LogDebug("[VRCFTOmniceptModule] Init status {Start}", start);
-        return (start, false);
+        Logger?.LogDebug("[VRCFTOmniceptModule] Init status {Start}", m_isConnected);
+        return (m_isConnected, false);
     }
 
     public override void Update()
     {
-        if (Status == ModuleState.Active)
-            manager?.UpdateMessage();
+        if (m_isConnected)
+        {
+            ITransportMessage? transportMessage = null;
+            try
+            {
+                transportMessage = m_gliaClient!.Connection.Receive(100);
+            }
+            catch (TransportError e)
+            {
+                Logger?.LogDebug("[VRCFTOmniceptModule] TransportError {e}", e);
+            }
+            catch (TerminatingException e)
+            {
+                Logger?.LogDebug("[VRCFTOmniceptModule] TerminatingException {e}", e);
+            }
+            if (transportMessage != null)
+            {
+                if (transportMessage.Header.MessageType == MessageTypes.ABI_MESSAGE_EYE_TRACKING)
+                {
+                    Data.Update(m_gliaClient!.Connection.Build<EyeTracking>(transportMessage));
+                    VRCFTEyeTracking.UpdateEyeTrackingData(Data);
+                }
+            }
+        }
     }
 
     public override void Teardown()
     {
-        manager?.StopGlia();
-        manager = null;
+        if (m_gliaClient != null)
+        {
+            m_gliaClient.Dispose();
+            m_gliaClient = null;
+        }
+        m_isConnected = false;
+        Glia.cleanupNetMQConfig();
         SmoothFloatWorkers.Destroy();
     }
 
