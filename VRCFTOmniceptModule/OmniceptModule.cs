@@ -12,7 +12,6 @@ namespace VRCFTOmniceptModule;
 
 public class OmniceptModule : ExtTrackingModule
 {
-    internal static ILogger? logger;
     private Glia? m_gliaClient;
     private readonly VRCFTEyeTracking.VRCFTEyeTrackingData Data = new();
     private bool m_isConnected = false;

@@ -4,6 +4,8 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AssemblyVersion>1.6.0.0</AssemblyVersion>
+        <FileVersion>1.6.0.0</FileVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -12,17 +14,18 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <PlatformTarget>x64</PlatformTarget>
+      <DebugType>none</DebugType>
     </PropertyGroup>
 
     <ItemGroup>
       <Reference Include="AsyncIO">
-        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\AsyncIO.dll</HintPath>
+        <HintPath>$(HPSDK)\HP Omnicept SDK\$(HPSDKVERSION)\bin\Release\csharp\AsyncIO.dll</HintPath>
       </Reference>
       <Reference Include="Google.Protobuf">
-        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\Google.Protobuf.dll</HintPath>
+        <HintPath>$(HPSDK)\HP Omnicept SDK\$(HPSDKVERSION)\bin\Release\csharp\Google.Protobuf.dll</HintPath>
       </Reference>
       <Reference Include="lib-client-csharp">
-        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\lib-client-csharp.dll</HintPath>
+        <HintPath>$(HPSDK)\HP Omnicept SDK\$(HPSDKVERSION)\bin\Release\csharp\lib-client-csharp.dll</HintPath>
       </Reference>
       <Reference Include="Microsoft.Extensions.Logging">
         <HintPath>Microsoft.Extensions.Logging.dll</HintPath>
@@ -31,7 +34,7 @@
         <HintPath>Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
       </Reference>
       <Reference Include="NetMQ">
-        <HintPath>..\..\..\HP\HP Omnicept SDK\1.13.1\bin\Release\csharp\NetMQ.dll</HintPath>
+        <HintPath>$(HPSDK)\HP Omnicept SDK\$(HPSDKVERSION)\bin\Release\csharp\NetMQ.dll</HintPath>
       </Reference>
       <Reference Include="VRCFaceTracking.Core">
         <HintPath>VRCFaceTracking.Core.dll</HintPath>
@@ -51,6 +54,10 @@
     <ItemGroup>
       <None Remove="HMD.png" />
       <EmbeddedResource Include="HMD.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="VRCFTOmniceptModule.csproj.user" />
     </ItemGroup>
 
 </Project>
